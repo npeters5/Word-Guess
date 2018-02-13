@@ -3,60 +3,99 @@
 
 
 # Overall goal: Create a game which will allow the user to guess a word and get ASCII-art as feedback on their guesses.
-words_array = %w[bear road read book]
+
 
 # rand_word = random_word
 
+
 class Game
 
-  attr_accessor :word
+  #attr_accessor :word
 
-  def initialize(input_array)
-    @words = input_array
+  def initialize
+    @blanks_array = []
+    @word_array = []
+    @flower_pot = [
+      "    (@)(@)(@)(@)
+      *,*,*,*
+      _*,*,*_
+      |_____|
+       |   |
+       |___|",
+      "    (@)(@)(@)
+      *,*,*,*
+      _*,*,*_
+      |_____|
+       |   |
+       |___|",
+      "    (@)(@)
+      *,*,*,*
+      _*,*,*_
+      |_____|
+       |   |
+       |___|",
+      "    (@)
+      *,*,*,*
+      _*,*,*_
+      |_____|
+       |   |
+       |___|",
+      "
+      *,*,*,*
+      _*,*,*_
+      |_____|
+       |   |
+       |___|",
+    ]
+    game_intro
+  end
+
+  def game_intro
+    puts " Welcome to the word guess game "
+    puts "It's like Hangman game. You will be given a random mystery word. You have the opportunity to guess letters in a word. Here is your flower pot. Each time you guess an incorrect letter, a rose will be removed. After four incorrect guesses there will be no more roses and the game will be over. Good luck! :) \n\n"
+    puts @flower_pot[0]
+    random_word
+    guess
   end
 
   def random_word
-    word = words_array[rand(words_array.length)]
-    return word
+    random_words_array = %w[bear road read book]
+    @word = random_words_array[rand(random_words_array.length)]
+    puts @word
+    split_word
   end
 
   def split_word
-    return @word.split("")
+    @word_array = @word.split("")
+    @word_array.each do
+      @blanks_array << "_ "
+    end
+    print @blanks_array.join
   end
 
+  def guess
+    num_guesses_remaining = 4
+    until num_guesses_remaining == 0
+      print "Please enter ONE letter to guess: "
+      guess_letter = gets.chomp
+      #see if guess matches letter in word. if wrong, decrement num_guesses_remaining
+      until guess_letter.length == 1 && guess_letter =~ /[a-zA-Z]/
+        puts "Invalid entry, try again."
+        guess_letter = gets.chomp
+      end
+      num_guesses_remaining -= 1
+    end
+  end
 end
 
-new_game = Game.new(words_array)
-puts new_game
-puts new_game.split_word
+new_game = Game.new
+# puts new_game
+# puts new_game.random_word
 
 
 # # The user should be able to input a single letter at a time.
-num_guesses = 4
-until num_guesses == 0
-  print "Please enter ONE letter to guess: "
-  guess_letter = gets.chomp
-  #see if guess matches letter in word. if wrong, decrement num_guesses
-  # guess_letter.length == 1 && guess_letter =~ /[a-zA-Z]/
-  # puts "Invalid entry, try again."
-  # guess_letter = gets.chomp
-  num_guesses -= 1
-end
-#
-#
-# # Between each guess, the board should be redrawn to the terminal (ASCII art!).
-# # Fix art later?
-# draw (@) based on num_guesses remaining
-def print_art
-  puts "   (@)(@)(@)(@)   "
-  puts "     *,*,*,*      "
-  puts "     _*,*,*_      "
-  puts "     |_____|      "
-  puts "      |   |       "
-  puts "      |___|       "
-end
 
-print_art
+# # Between each guess, the board should be redrawn to the terminal (ASCII art!).
 
 # Display the letters that have already been guessed before each player guesses a new letter.
 
