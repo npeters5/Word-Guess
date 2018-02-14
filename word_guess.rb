@@ -1,3 +1,7 @@
+# Optional enhancement: Use the colorize gem to make pieces of the ASCII art different colors.
+require "colorize"
+# require "random-word"
+
 # Overall goal: Create a game which will allow the user to guess a word and get ASCII-art as feedback on their guesses.
 
 # create Game class
@@ -16,31 +20,31 @@ class Game
       _*,*,*_
       |_____|
        |   |
-       |___|",
+       |___|".colorize(:red).blink,
       "    (@)(@)(@)
       *,*,*,*
       _*,*,*_
       |_____|
        |   |
-       |___|",
+       |___|".colorize(:blue),
       "    (@)(@)
       *,*,*,*
       _*,*,*_
       |_____|
        |   |
-       |___|",
+       |___|".colorize(:magenta),
       "    (@)
       *,*,*,*
       _*,*,*_
       |_____|
        |   |
-       |___|",
+       |___|".colorize(:red),
       "
       *,*,*,*
       _*,*,*_
       |_____|
        |   |
-       |___|",
+       |___|".colorize(:green),
     ]
     game_intro
   end
@@ -54,9 +58,10 @@ class Game
   end
 
   def random_word
+    # @word = RandomWord.nouns(not_shorter_than: 4, not_longer_than: 4).next
     random_words_array = %w[book bear road read pipe pump coin]
     @word = random_words_array[rand(random_words_array.length)]
-    # puts @word
+    puts @word
     split_word
   end
 
@@ -76,8 +81,9 @@ class Game
       @guess_letter = gets.chomp
 
       # The user should be able to input a single letter at a time.
+      # Optional enhancements: Handle inappropriate user input; Ensure the user is not penalized for guessing the same letter more than once.
       # Between each guess, the board should be redrawn to the terminal (ASCII art!).
-      until guess_letter.length == 1 && guess_letter =~ /[a-zA-Z]/
+      until guess_letter.length == 1 && guess_letter =~ /[a-zA-Z]/ && !(@guessed_letters.include?(@guess_letter))
         puts "Invalid entry, try again."
         @guess_letter = gets.chomp
       end
@@ -90,7 +96,11 @@ class Game
           end
         end
         # print @blanks_array.join
-      else puts @flower_pot[num_wrong_guesses + 1]
+      # elsif @guessed_letters.include?(@guess_letter)
+      #   puts "You already guessed that letter, try again: "
+      #   @guess_letter = gets.chomp
+      else
+        puts @flower_pot[num_wrong_guesses + 1]
         num_wrong_guesses += 1
         @guessed_letters << @guess_letter
       end
